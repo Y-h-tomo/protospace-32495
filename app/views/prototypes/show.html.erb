@@ -1,0 +1,54 @@
+<main class="main">
+  <div class="inner">
+    <div class="prototype__wrapper">
+      <p class="prototype__hedding">
+        <%= @prototype.title %>
+      </p>
+      <%= link_to "by #{@prototype.user.name}", user_path(@prototype.user_id),class: :prototype__user %>
+      <%# ログインユーザーとプロトタイプ投稿者が同一の場合、編集と削除リンクを表示 %>
+      <% if @prototype.user == current_user %>
+        <div class="prototype__manage">
+          <%= link_to "編集する", edit_prototype_path, class: :prototype__btn %>
+          <%= link_to "削除する", prototype_path, class: :prototype__btn, method: :delete %>
+        </div>
+      <% end %>
+      <div class="prototype__image">
+        <%= image_tag @prototype.image %>
+      </div>
+      <div class="prototype__body">
+        <div class="prototype__detail">
+          <p class="detail__title">キャッチコピー</p>
+          <p class="detail__message">
+            <%=  @prototype.catch_copy %>
+          </p>
+        </div>
+        <div class="prototype__detail">
+          <p class="detail__title">コンセプト</p>
+          <p class="detail__message">
+            <%= @prototype.concept %>
+          </p>
+        </div>
+      </div>
+      <div class="prototype__comments">
+            <%# ログインユーザーのみコメント可、コメントデータはプロトタイプと紐づけて保存 %>
+        <% if current_user %>
+        <%= form_with(model: [@prototype, @comment], local: true) do |f| %>
+            <div class="field">
+              <%= f.label :text, "コメント" %><br />
+               <%= f.text_field :text %>
+            </div>
+            <div class="actions">
+               <%= f.submit "送信する", class: :form__btn  %>
+            </div>
+           <% end %>
+        <% end %>
+          <%# コメントがある場合表示、コメント部分テンプレートを変数を渡して複数表示 %>
+        <% if @comments%>
+        <ul class="comments_lists">
+            <%= render partial: "comments/comment", collection: @comments %>
+        </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</main>
